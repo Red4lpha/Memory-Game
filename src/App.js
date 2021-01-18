@@ -1,103 +1,49 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 
-function shuffleArray(arrayLength){
-  let array = [];
-  for(let i = 0; i < arrayLength; i++){array[i] = i;}
 
-  //Durstenfeld shuffle - to randomize array entries
-  for(let i = arrayLength-1;i>0;i--){
-    let j = Math.floor(Math.random() * (i + 1));
-    let temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
-  } 
-  return array;
-}
-const initialCardState = {
-  cards: [{
-    data: 'a',
-    isClicked: false
-  },
-  {
-    data: 'b',
-    isClicked: false 
-  },
-  {
-    data: 'c',
-    isClicked: false 
-  },
-  {
-    data: 'd',
-    isClicked: false 
-  },
-  {
-    data: 'e',
-    isClicked: false 
-  },
-  {
-    data: 'f',
-    isClicked: false 
-  },
-  {
-    data: 'g',
-    isClicked: false 
-  },
-  {
-    data: 'h',
-    isClicked: false 
-  },
-  {
-    data: 'i',
-    isClicked: false 
-  },
-  {
-    data: 'j',
-    isClicked: false 
-  },
-  {
-    data: 'k',
-    isClicked: false 
-  },
-  {
-    data: 'l',
-    isClicked: false 
-  },]
-};
-let count = 0;
 
 function App() {
+  const initialCardState = 
+  [{ data: 'a', isClicked: false, id: 0},
+  { data: 'b',isClicked: false, id: 1 },
+  { data: 'c',isClicked: false, id: 2 },
+  { data: 'd',isClicked: false, id: 3 },
+  { data: 'e',isClicked: false, id: 4 },
+  { data: 'f',isClicked: false, id: 5 },
+  { data: 'g',isClicked: false, id: 6 },
+  { data: 'h',isClicked: false, id: 7 },
+  { data: 'i',isClicked: false, id: 8 },
+  { data: 'j',isClicked: false, id: 9 },
+  { data: 'k',isClicked: false, id: 10 },
+  { data: 'l',isClicked: false, id: 11 },];
+
   const [score, setScore] = useState(0);
   const [hiScore, setHiScore] = useState(0);
-  const [{cards}, setCards] = useState(initialCardState);
-
+  const [cards, setCards] = useState([...initialCardState]);
   
-   let array = [];
-  if (cards !== undefined && cards !== null){
-    array = shuffleArray(cards.length);
-    count++;
-    console.log("count: " + count);
-  }; 
-
-  //todo? need to make an eventlistener for each for the cards
-  //todo? --within the eventlistener it changes the clicked isClicked to true and then gets rerendered
-  //todo --checks if the card was already clicked if not increase score if so reset game score 
-  //todo create a score board
+  const shuffleArray = (array) => {
+    for(let i = array.length-1;i>0;i--){
+      let j = Math.floor(Math.random() * i );
+      [array[j], array[i]] = [array[i], array[j]];
+    } 
+  };
 
   const handleClick = (e) => {
-    const index = e.target.id;
+  const index = e.target.id;
     console.log("Clicked: "+ index);
-    console.table(cards[index]);
-    let newCards = {...cards};
-/*     newCards[index].isClicked = true;
-    setCards(newCards); */
-    
+    //console.table(cards[index]);
+    let newCards = [...cards];
+
     if(newCards[index].isClicked){
       alert("Duplicate click! - Resetting score");
-      setScore(0);   
       //newCards.isClicked = false;
-      newCards = {...initialCardState}
-      setCards(newCards); 
+      newCards = [...initialCardState];
+      setCards(newCards);
+      if(hiScore < score){
+        setHiScore(score);
+      } 
+      setScore(0);   
     }
     else{
       newCards[index].isClicked = true;
@@ -106,20 +52,26 @@ function App() {
     }
     //console.log(cards[index].isClicked);
   }
+
   useEffect(() => {
-    setCards(initialCardState);
-    
-  }, [cards]);
+    console.log("inside UseEffect");
+    const newCards = [...cards];
+    shuffleArray(newCards);
+    setCards(newCards);
+    console.table(cards);
+
+  },[score]);
 
   return ( 
     <div className="container">
       <div className="scoreBoard">
-        Score: {score}
+        <div className="score">Score: {score}</div>
+        <div className="score">Hi-Score: {hiScore}</div>
     {/*     Hi-Score: {hiScore} */}
       </div>
       <div className="grid">
-        {array.map((randIndex) => (
-          <div className="element" id={randIndex} onClick={handleClick}>{cards[randIndex].data}</div>
+        {cards.map((card, index) => (
+          <div className="element" id={index} key={card.id} onClick={handleClick}>{card.data}</div>
         ))}
       </div>
     </div>

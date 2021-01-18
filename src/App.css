@@ -7,7 +7,12 @@
 .scoreBoard {
   margin: 5px auto;
   padding: 5px;
+  display: flex;
+}
+.score{
   border: 2px solid blue;
+  margin: 5px;
+  padding: 2px;
 }
 
 .grid {
