@@ -42,7 +42,7 @@ function App() {
   };
 
   const handleClick = (e) => {
-  const index = e.target.id;
+    const index = e.target.id;
     console.log("Clicked: "+ index);
     //console.table(cards[index]);
     let newCards = [...cards];
